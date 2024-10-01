@@ -1,0 +1,75 @@
+import random
+import string
+
+# Mogelijke statussen
+STATUSSEN = [
+    "Bestelling bevestigd", 
+    "Klaar om in te pakken", 
+    "Aan het inpakken", 
+    "Ingepakt", 
+    "Klaar voor verzenden", 
+    "Afgeleverd aan verzendingsdienst", 
+    "Verzonden",
+    "Afgeleverd"
+]
+
+# Gebruikersbeheer met rollen
+gebruikers = {
+    "koerier1": {"wachtwoord": "koerier123", "rol": "inpakkers/koeriers"},
+    "receptie1": {"wachtwoord": "receptie123", "rol": "receptie"},
+    "beheerder1": {"wachtwoord": "beheerder123", "rol": "beheerder"},
+}
+
+# Pakket class
+class Pakket:
+    def __init__(self, tracking_code, bestemming):
+        self.tracking_code = tracking_code
+        self.bestemming = bestemming
+        self.status = STATUSSEN[0]  # Beginstatus is "Bestelling bevestigd"
+        self.locatiegeschiedenis = [(self.status, "Magazijn")]
+        self.opmerkingen = []
+
+    def update_status(self, nieuwe_status):
+        if nieuwe_status in STATUSSEN:
+            self.status = nieuwe_status
+            self.locatiegeschiedenis.append((self.status, "Locatie onbekend"))
+            print(f"Status bijgewerkt naar: {self.status}")
+        else:
+            print("Ongeldige status.")
+
+    def voeg_opmerking_toe(self, opmerking):
+        self.opmerkingen.append(opmerking)
+        print("Opmerking toegevoegd.")
+
+    def toon_locatiegeschiedenis(self):
+        print(f"Locatiegeschiedenis voor pakket {self.tracking_code}:")
+        for status, locatie in self.locatiegeschiedenis:
+            print(f"- {status} bij {locatie}")
+
+# Functie om een unieke trackingcode te genereren
+def genereer_tracking_code():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+# Voorbeeld van hoe je een pakket kunt aanmaken en beheren
+def main():
+    # Pakket aanmaken
+    tracking_code = genereer_tracking_code()
+    pakket1 = Pakket(tracking_code, "Amsterdam")
+    
+    # Status handmatig bijwerken
+    pakket1.update_status("Klaar om in te pakken")
+    pakket1.update_status("Aan het inpakken")
+    pakket1.update_status("Ingepakt")
+    pakket1.update_status("Klaar voor verzenden")
+    pakket1.update_status("Afgeleverd aan verzendingsdienst")
+    pakket1.update_status("Verzonden")
+    pakket1.update_status("Afgeleverd")
+
+    # Opmerkingen toevoegen
+    pakket1.voeg_opmerking_toe("Pakket is succesvol verzonden.")
+    
+    # Locatiegeschiedenis tonen
+    pakket1.toon_locatiegeschiedenis()
+
+if __name__ == "__main__":
+    main()
